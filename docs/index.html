@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Explainable Talent Scoring · 可解释的八维人才评估</title><style>
+:root { --text:#0f172a; --muted:#64748b; --border:#e2e8f0; --accent:#4f46e5; --bg:#f8fafc; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); }
+.wrap { max-width:1120px; margin:0 auto; padding:30px 22px 48px; }
+h1 { margin:0 0 6px; font-size:1.55rem; } h2 { font-size:1.02rem; margin:30px 0 12px; }
+.meta { color:var(--muted); font-size:0.86rem; line-height:1.7; }
+.badge { display:inline-block; margin-left:8px; padding:1px 8px; border-radius:999px; background:#fef3c7; color:#92400e; font-size:0.74rem; }
+.grid { display:grid; gap:14px; } .g4 { grid-template-columns:repeat(4,1fr); } .g2 { grid-template-columns:1fr 1fr; } .g3 { grid-template-columns:repeat(3,1fr); }
+@media (max-width:860px) { .g4,.g2,.g3 { grid-template-columns:1fr; } }
+.card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px; }
+.kpi .label { color:var(--muted); font-size:0.78rem; } .kpi .value { font-size:1.45rem; font-weight:700; margin-top:4px; } .kpi .sub { color:var(--muted); font-size:0.76rem; margin-top:3px; }
+table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+th, td { text-align:left; padding:7px 8px; border-bottom:1px solid var(--border); vertical-align:middle; }
+th { color:var(--muted); font-weight:600; } td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+.bar { height:8px; border-radius:4px; background:var(--accent); }
+.tier { display:inline-block; min-width:30px; text-align:center; font-weight:700; font-size:0.78rem; padding:2px 6px; border-radius:6px; color:#fff; }
+.t-Sp { background:#7c3aed; } .t-S { background:#4f46e5; } .t-A { background:#0891b2; } .t-B { background:#64748b; } .t-C { background:#cbd5e1; color:#334155; }
+.stack { display:flex; height:16px; border-radius:5px; overflow:hidden; background:#f1f5f9; margin:8px 0 6px; }
+.legend { display:flex; flex-wrap:wrap; gap:4px 12px; font-size:0.74rem; color:var(--muted); }
+.legend i { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:4px; }
+.muted { color:var(--muted); font-size:0.78rem; line-height:1.6; }
+.good { color:#047857; font-weight:600; } .flat { color:#b45309; font-weight:600; }
+pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:8px; font-size:0.72rem; overflow:auto; margin:10px 0 0; }
+footer { margin-top:36px; color:var(--muted); font-size:0.78rem; }
+</style></head>
+<body><div class="wrap">
+  <h1>Explainable Talent Scoring · 可解释的八维人才评估</h1>
+  <div class="meta">线索池 → 八维特征 → 可配置加权评分 → S+/S/A/B/C 分层 → 差异化跟进 → AB 实验验证
+    <span class="badge">模拟数据，全部虚构</span></div>
+
+  <div class="grid g4" style="margin-top:20px">
+    <div class="card kpi"><div class="label">量化评分</div><div class="value">6,000 人</div><div class="sub">S+ 62 · S 269 · A 820 · B 1,782 · C 3,067</div></div>
+    <div class="card kpi"><div class="label">回流意向识别准确率</div><div class="value">57.5% → 86.5%</div><div class="sub">单一标签 → 四因子梯度</div></div>
+    <div class="card kpi"><div class="label">AB 实验 · 回复率</div><div class="value">44.4% → 52.9%</div><div class="sub">双比例 z 检验 p = 0.0005</div></div>
+    <div class="card kpi"><div class="label">AB 分析查询耗时</div><div class="value">9.5s → 10ms</div><div class="sub">补联合索引后（本机实测）</div></div>
+  </div>
+
+  <h2>八维度 · 专家加权（config/scoring.toml）</h2>
+  <div class="card"><table>
+    <thead><tr><th>维度</th><th class="num">权重</th><th></th><th>说明</th></tr></thead>
+    <tbody><tr><td><strong>赛道关联度</strong></td><td class='num'>0.22</td><td style='width:28%'><div class="bar" style="width:100%"></div></td><td class='muted'>研究方向与目标赛道的重合度</td></tr><tr><td><strong>导师网络</strong></td><td class='num'>0.16</td><td style='width:28%'><div class="bar" style="width:73%"></div></td><td class='muted'>导师资历与合作网络规模</td></tr><tr><td><strong>本地资源</strong></td><td class='num'>0.14</td><td style='width:28%'><div class="bar" style="width:64%"></div></td><td class='muted'>与本地院校、项目的合作次数</td></tr><tr><td><strong>内部连接</strong></td><td class='num'>0.14</td><td style='width:28%'><div class="bar" style="width:64%"></div></td><td class='muted'>可转介绍的内部联系人</td></tr><tr><td><strong>工程产出</strong></td><td class='num'>0.11</td><td style='width:28%'><div class="bar" style="width:50%"></div></td><td class='muted'>开源项目影响力（对数刻度）</td></tr><tr><td><strong>顶会论文</strong></td><td class='num'>0.11</td><td style='width:28%'><div class="bar" style="width:50%"></div></td><td class='muted'>顶会论文数，一作额外加分</td></tr><tr><td><strong>地域关联度</strong></td><td class='num'>0.12</td><td style='width:28%'><div class="bar" style="width:55%"></div></td><td class='muted'>四因子梯度：常驻地区、本科院校、本地导师、本地项目</td></tr><tr><td><strong>学术引用</strong></td><td class='num'>0.00</td><td style='width:28%'><span class="muted">不计分</span></td><td class='muted'>噪声大（领域差异、自引），仅作参考</td></tr></tbody></table>
+    <p class="muted">不用机器学习黑盒：每个候选人的总分都能拆回到维度贡献，业务方可以直接改权重和分层阈值。
+    S+ 除总分外还要求赛道关联度 ≥ 60、顶会论文 ≥ 50；缺失 ≥ 3 个维度直接判 C，补全信息后复评。</p>
+  </div>
+
+  <h2>每个分数都能解释</h2>
+  <div class='grid g3'><div class='card'><div style='display:flex;justify-content:space-between;align-items:center'><strong>R00016</strong><span><span class="tier t-Sp">S+</span> <b>69.2</b> 分</span></div><div class='stack'><div style="width:22.0%;background:#4f46e5" title="赛道关联度 +22.0"></div><div style="width:8.0%;background:#7c3aed" title="导师网络 +8.0"></div><div style="width:11.2%;background:#0891b2" title="本地资源 +11.2"></div><div style="width:0.0%;background:#059669" title="内部连接 +0.0"></div><div style="width:4.95%;background:#d97706" title="工程产出 +5.0"></div><div style="width:11.0%;background:#db2777" title="顶会论文 +11.0"></div><div style="width:12.0%;background:#475569" title="地域关联度 +12.0"></div></div><div class='muted'>主要得分来自 赛道关联度（+22.0）、地域关联度（+12.0）</div><div class='muted' style='margin-top:6px'>赛道关联度 100 · 导师网络 50 · 本地资源 80 · 内部连接 0 · 工程产出 45 · 顶会论文 100 · 地域关联度 100</div><div class='muted' style='margin-top:6px'>跟进策略：<b>优先建联 · 负责人亲自跟进</b></div></div><div class='card'><div style='display:flex;justify-content:space-between;align-items:center'><strong>R00006</strong><span><span class="tier t-A">A</span> <b>54.2</b> 分</span></div><div class='stack'><div style="width:10.12%;background:#4f46e5" title="赛道关联度 +10.1"></div><div style="width:11.2%;background:#7c3aed" title="导师网络 +11.2"></div><div style="width:5.6%;background:#0891b2" title="本地资源 +5.6"></div><div style="width:0.0%;background:#059669" title="内部连接 +0.0"></div><div style="width:6.68%;background:#d97706" title="工程产出 +6.7"></div><div style="width:11.0%;background:#db2777" title="顶会论文 +11.0"></div><div style="width:9.6%;background:#475569" title="地域关联度 +9.6"></div></div><div class='muted'>主要得分来自 导师网络（+11.2）、顶会论文（+11.0）</div><div class='muted' style='margin-top:6px'>赛道关联度 46 · 导师网络 70 · 本地资源 40 · 内部连接 0 · 工程产出 60 · 顶会论文 100 · 地域关联度 80</div><div class='muted' style='margin-top:6px'>跟进策略：<b>标准流程 · 定期跟进</b></div></div><div class='card'><div style='display:flex;justify-content:space-between;align-items:center'><strong>R00017</strong><span><span class="tier t-C">C</span> <b>11.6</b> 分</span></div><div class='stack'><div style="width:3.63%;background:#4f46e5" title="赛道关联度 +3.6"></div><div style="width:0.0%;background:#7c3aed" title="导师网络 +0.0"></div><div style="width:5.6%;background:#0891b2" title="本地资源 +5.6"></div><div style="width:0.0%;background:#059669" title="内部连接 +0.0"></div><div style="width:0.0%;background:#d97706" title="工程产出 +0.0"></div><div style="width:2.42%;background:#db2777" title="顶会论文 +2.4"></div><div style="width:0.0%;background:#475569" title="地域关联度 +0.0"></div></div><div class='muted'>缺失 3 个维度，信息不足</div><div class='muted' style='margin-top:6px'>赛道关联度 16 · 导师网络 缺失 · 本地资源 40 · 内部连接 缺失 · 工程产出 缺失 · 顶会论文 22 · 地域关联度 0</div><div class='muted' style='margin-top:6px'>跟进策略：<b>暂缓 · 补全信息后复评</b></div></div></div><div class='legend' style='margin-top:10px'><span><i style="background:#4f46e5"></i>赛道关联度</span><span><i style="background:#7c3aed"></i>导师网络</span><span><i style="background:#0891b2"></i>本地资源</span><span><i style="background:#059669"></i>内部连接</span><span><i style="background:#d97706"></i>工程产出</span><span><i style="background:#db2777"></i>顶会论文</span><span><i style="background:#475569"></i>地域关联度</span></div>
+
+  <h2>分层漏斗（第 1 轮：按分层策略跟进全量线索）</h2>
+  <div class="card"><table>
+    <thead><tr><th>层级</th><th>跟进策略</th><th class="num">线索</th><th class="num">触达</th><th class="num">回复率</th><th class="num">面试率</th><th class="num">Offer 率</th></tr></thead>
+    <tbody><tr><td><span class="tier t-Sp">S+</span></td><td class='muted'>优先建联 · 负责人亲自跟进</td><td class='num'>62</td><td class='num'>62</td><td class='num'>61.3%</td><td class='num'>46.8%</td><td class='num'>30.6%</td></tr><tr><td><span class="tier t-S">S</span></td><td class='muted'>快速触达 · 定制化沟通</td><td class='num'>269</td><td class='num'>251</td><td class='num'>62.2%</td><td class='num'>41.0%</td><td class='num'>18.7%</td></tr><tr><td><span class="tier t-A">A</span></td><td class='muted'>标准流程 · 定期跟进</td><td class='num'>820</td><td class='num'>666</td><td class='num'>51.5%</td><td class='num'>35.3%</td><td class='num'>18.8%</td></tr><tr><td><span class="tier t-B">B</span></td><td class='muted'>批量触达 · 低优先级</td><td class='num'>1,782</td><td class='num'>767</td><td class='num'>39.8%</td><td class='num'>23.6%</td><td class='num'>11.1%</td></tr><tr><td><span class="tier t-C">C</span></td><td class='muted'>暂缓 · 补全信息后复评</td><td class='num'>3,067</td><td class='num'>370</td><td class='num'>26.5%</td><td class='num'>13.8%</td><td class='num'>5.1%</td></tr></tbody></table>
+    <p class="muted">转化率均以「触达」为分母。层级越高转化越好，说明分层对跟进优先级有区分度。</p>
+  </div>
+
+  <h2 id="ties">地域关联度：单一标签 vs 四因子梯度</h2>
+  <div class="grid g2">
+    <div class="card"><table>
+      <thead><tr><th>算法</th><th class="num">准确率</th><th class="num">漏判率</th><th class="num">误判率</th><th class="num">TP / FP / FN / TN</th></tr></thead>
+      <tbody><tr><td>单一标签：本科是否在本地</td><td class='num'><b>57.5%</b></td><td class='num'>39.4%</td><td class='num'>47.3%</td><td class='num muted'>2225 / 1102 / 1447 / 1226</td></tr><tr><td>四因子梯度打分</td><td class='num'><b>86.5%</b></td><td class='num'>11.5%</td><td class='num'>16.7%</td><td class='num muted'>3251 / 389 / 421 / 1939</td></tr></tbody></table></div>
+    <div class="card muted">
+      旧做法只看一个 0/1 标签（本科是否在本地），大量「本地本科、长期在海外」和「海外本科、已回本地」的人被判错。
+      梯度打分把常驻地区（0.4）、本科院校（0.25）、本地导师（0.2）、
+      本地项目（0.15）加权成 0–100 分，≥ 35 视为有回流意向。<br/><br/>
+      准确率用模拟数据里的真实意向离线评估，算法本身看不到这个标签。
+    </div>
+  </div>
+
+  <h2>AB 实验（第 2 轮：地域关联度换成梯度打分，其余维度不变）</h2>
+  
+  <div class="card">
+    <div class="muted">纯对照 2,792 人 · 纯实验 2,882 人 · 混合样本 <b>326</b> 人（重复导入，同时出现在两组，不参与对比）</div>
+    <table style="margin-top:8px">
+      <thead><tr><th>指标</th><th class="num">对照组</th><th class="num">实验组</th><th class="num">差值</th><th class="num">z</th><th class="num">p</th><th>结论</th></tr></thead>
+      <tbody><tr><td>回复率（回复 / 触达）</td><td class='num'>44.4%</td><td class='num'>52.9%</td><td class='num'>+8.4pp</td><td class='num'>3.48</td><td class='num'>0.0005</td><td><span class="good">显著提升</span></td></tr><tr><td>面试率（面试 / 触达）</td><td class='num'>28.8%</td><td class='num'>33.4%</td><td class='num'>+4.6pp</td><td class='num'>2.06</td><td class='num'>0.0396</td><td><span class="good">显著提升</span></td></tr><tr><td>Offer 率（Offer / 触达）</td><td class='num'>15.7%</td><td class='num'>16.6%</td><td class='num'>+0.9pp</td><td class='num'>0.53</td><td class='num'>0.5983</td><td><span class="flat">不显著</span></td></tr></tbody></table>
+    <p class="muted">两组招聘人力相同，各自只跟进组内得分前 30% 的线索；对照组触达 837 人，实验组 868 人。
+    实验组无效跟进（触达后无回复）减少 15%。回复率显著提升，但 Offer 率差异不显著：
+    Offer 主要取决于岗位匹配度而非回流意向，地域关联度只该影响「先联系谁」，不该被当成录用依据。</p>
+  </div>
+
+  <h2>SQL：NOT EXISTS 排他分组 + 联合索引</h2>
+  <div class="card">
+    <div class="muted">AB 分析需要对每个人做「是否同时在两组」和「各阶段是否发生」的关联子查询。关闭 SQLite 自动索引时全表扫描耗时
+    <b>9.5s</b>；补上 assignments(candidate_id, round, grp) 与 events(candidate_id, round, stage)
+    两个覆盖索引后降到 <b>10.3ms</b>。</div>
+    <pre>WITH pure AS (
+  SELECT a.candidate_id, a.grp
+  FROM assignments a
+  WHERE a.round = 2
+    AND NOT EXISTS (
+      SELECT 1 FROM assignments b
+      WHERE b.candidate_id = a.candidate_id AND b.round = a.round AND b.grp &lt;&gt; a.grp)
+)
+SELECT p.grp,
+       COUNT(*) AS leads,
+       SUM(EXISTS (SELECT 1 FROM events e WHERE e.candidate_id = p.candidate_id AND e.round = 2 AND e.stage = &#x27;contacted&#x27;)) AS contacted,
+       SUM(EXISTS (SELECT 1 FROM events e WHERE e.candidate_id = p.candidate_id AND e.round = 2 AND e.stage = &#x27;replied&#x27;)) AS replied,
+       SUM(EXISTS (SELECT 1 FROM events e WHERE e.candidate_id = p.candidate_id AND e.round = 2 AND e.stage = &#x27;interview&#x27;)) AS interview,
+       SUM(EXISTS (SELECT 1 FROM events e WHERE e.candidate_id = p.candidate_id AND e.round = 2 AND e.stage = &#x27;offer&#x27;)) AS offer
+FROM pure p
+GROUP BY p.grp
+ORDER BY p.grp</pre>
+    <pre>-- EXPLAIN QUERY PLAN（建索引后）
+SCAN a
+CORRELATED SCALAR SUBQUERY 1
+SEARCH b USING COVERING INDEX idx_assign (candidate_id=? AND round=?)
+USE TEMP B-TREE FOR GROUP BY
+CORRELATED SCALAR SUBQUERY 3
+SEARCH e USING COVERING INDEX idx_events (candidate_id=? AND round=? AND stage=?)
+CORRELATED SCALAR SUBQUERY 4
+SEARCH e USING COVERING INDEX idx_events (candidate_id=? AND round=? AND stage=?)
+CORRELATED SCALAR SUBQUERY 5
+SEARCH e USING COVERING INDEX idx_events (candidate_id=? AND round=? AND stage=?)
+CORRELATED SCALAR SUBQUERY 6
+SEARCH e USING COVERING INDEX idx_events (candidate_id=? AND round=? AND stage=?)</pre>
+  </div>
+
+  <footer>由 run.py 生成 · 权重与阈值见 config/scoring.toml</footer>
+</div></body></html>

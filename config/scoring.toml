@@ -1,0 +1,90 @@
+# 八维评估配置：业务方可直接改权重与阈值，无需改代码。
+# weight 为 0 的维度只展示、不计分。
+
+[[dimensions]]
+key = "track"
+name = "赛道关联度"
+weight = 0.22
+note = "研究方向与目标赛道的重合度"
+
+[[dimensions]]
+key = "mentor"
+name = "导师网络"
+weight = 0.16
+note = "导师资历与合作网络规模"
+
+[[dimensions]]
+key = "local"
+name = "本地资源"
+weight = 0.14
+note = "与本地院校、项目的合作次数"
+
+[[dimensions]]
+key = "referral"
+name = "内部连接"
+weight = 0.14
+note = "可转介绍的内部联系人"
+
+[[dimensions]]
+key = "engineering"
+name = "工程产出"
+weight = 0.11
+note = "开源项目影响力（对数刻度）"
+
+[[dimensions]]
+key = "papers"
+name = "顶会论文"
+weight = 0.11
+note = "顶会论文数，一作额外加分"
+
+[[dimensions]]
+key = "ties"
+name = "地域关联度"
+weight = 0.12
+note = "四因子梯度：常驻地区、本科院校、本地导师、本地项目"
+
+[[dimensions]]
+key = "citations"
+name = "学术引用"
+weight = 0.0
+note = "噪声大（领域差异、自引），仅作参考"
+
+[ties]
+# 地域关联度的四个因子及权重，合计 1
+region = 0.40
+undergrad = 0.25
+mentor = 0.20
+project = 0.15
+# 分数 ≥ threshold 视为「有回流意向」
+threshold = 35
+
+# 分层阈值（总分 0–100），自上而下匹配
+[[tiers]]
+name = "S+"
+min = 66
+require = { track = 60, papers = 50 }
+strategy = "优先建联 · 负责人亲自跟进"
+
+[[tiers]]
+name = "S"
+min = 58
+strategy = "快速触达 · 定制化沟通"
+
+[[tiers]]
+name = "A"
+min = 48
+strategy = "标准流程 · 定期跟进"
+
+[[tiers]]
+name = "B"
+min = 36
+strategy = "批量触达 · 低优先级"
+
+[[tiers]]
+name = "C"
+min = 0
+strategy = "暂缓 · 补全信息后复评"
+
+[rules]
+# 缺失维度达到这个数量，直接判 C（信息不足）
+max_missing = 3
