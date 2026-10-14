@@ -188,6 +188,6 @@ def render(*, n: int, cfg: dict, funnel: list[dict], examples: list, acc: dict,
 {escape(plan)}</pre>
   </div>
 
-  <footer>由 run.py 生成 · 权重与阈值见 config/scoring.toml</footer>
+  <footer>由 run.py 生成 · 权重与阈值见 config/scoring.toml · © 2026 张文婧 (Anna Zhang) · github.com/annawzhang · MIT · 保留署名</footer>
 </div></body></html>
 """

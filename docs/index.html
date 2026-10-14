@@ -35,7 +35,7 @@ footer { margin-top:36px; color:var(--muted); font-size:0.78rem; }
     <div class="card kpi"><div class="label">量化评分</div><div class="value">6,000 人</div><div class="sub">S+ 62 · S 269 · A 820 · B 1,782 · C 3,067</div></div>
     <div class="card kpi"><div class="label">回流意向识别准确率</div><div class="value">57.5% → 86.5%</div><div class="sub">单一标签 → 四因子梯度</div></div>
     <div class="card kpi"><div class="label">AB 实验 · 回复率</div><div class="value">44.4% → 52.9%</div><div class="sub">双比例 z 检验 p = 0.0005</div></div>
-    <div class="card kpi"><div class="label">AB 分析查询耗时</div><div class="value">9.5s → 10ms</div><div class="sub">补联合索引后（本机实测）</div></div>
+    <div class="card kpi"><div class="label">AB 分析查询耗时</div><div class="value">11.2s → 11ms</div><div class="sub">补联合索引后（本机实测）</div></div>
   </div>
 
   <h2>八维度 · 专家加权（config/scoring.toml）</h2>
@@ -84,8 +84,8 @@ footer { margin-top:36px; color:var(--muted); font-size:0.78rem; }
   <h2>SQL：NOT EXISTS 排他分组 + 联合索引</h2>
   <div class="card">
     <div class="muted">AB 分析需要对每个人做「是否同时在两组」和「各阶段是否发生」的关联子查询。关闭 SQLite 自动索引时全表扫描耗时
-    <b>9.5s</b>；补上 assignments(candidate_id, round, grp) 与 events(candidate_id, round, stage)
-    两个覆盖索引后降到 <b>10.3ms</b>。</div>
+    <b>11.2s</b>；补上 assignments(candidate_id, round, grp) 与 events(candidate_id, round, stage)
+    两个覆盖索引后降到 <b>10.5ms</b>。</div>
     <pre>WITH pure AS (
   SELECT a.candidate_id, a.grp
   FROM assignments a
@@ -118,5 +118,5 @@ CORRELATED SCALAR SUBQUERY 6
 SEARCH e USING COVERING INDEX idx_events (candidate_id=? AND round=? AND stage=?)</pre>
   </div>
 
-  <footer>由 run.py 生成 · 权重与阈值见 config/scoring.toml</footer>
+  <footer>由 run.py 生成 · 权重与阈值见 config/scoring.toml · © 2026 张文婧 (Anna Zhang) · github.com/annawzhang · MIT · 保留署名</footer>
 </div></body></html>

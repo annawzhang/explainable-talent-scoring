@@ -2,6 +2,11 @@
 
 **线索太多、人力太少时，先联系谁？用一套业务方看得懂、改得动的加权评分来回答，再用 AB 实验证明它真的有用。**
 
+
+> **Copyright © 2026 张文婧 (Anna Zhang)** · [MIT License](./LICENSE) · [github.com/annawzhang](https://github.com/annawzhang)  
+> 欢迎学习与面试查阅；保留版权与许可声明。**禁止删除作者信息后冒充本人作品二次发表。** 公开内容为虚构/脱敏演示数据。
+
+
 [在线报告](https://annawzhang.github.io/explainable-talent-scoring/) · Python 标准库 + SQLite，无第三方依赖
 
 > 候选人、行为与转化全部为模拟数据。
